@@ -37,16 +37,23 @@ void DistanceMapLayer::onInitialize()
 
 void DistanceMapLayer::reconfigureCB(costmap_2d::GenericPluginConfig& config, uint32_t level)
 {
+  enabled_ = config.enabled;
 }
 
 void DistanceMapLayer::updateBounds(double robot_x, double robot_y, double robot_yaw, double* min_x, double* min_y,
                                     double* max_x, double* max_y)
 {
+  if (!enabled_)
+    return;
+
   // ROS_INFO("min_x = %lf, min_y = %lf, max_x = %lf, max_y = %lf", *min_x, *min_y, *max_x, *max_y);
 }
 
 void DistanceMapLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i, int max_j)
 {
+  if (!enabled_)
+    return;
+
   int size_x = master_grid.getSizeInCellsX();
   int size_y = master_grid.getSizeInCellsY();
   resolution_ = master_grid.getResolution();
