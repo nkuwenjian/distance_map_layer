@@ -10,9 +10,9 @@
 #include <opencv2/opencv.hpp>
 #include <boost/thread.hpp>
 
-namespace distance_map_layer
+namespace costmap_2d
 {
-class DistanceMapLayer : public costmap_2d::Layer
+class DistanceMapLayer : public Layer
 {
 public:
   DistanceMapLayer();
@@ -38,6 +38,6 @@ private:
   boost::mutex mutex_;
 };
 
-}  // namespace distance_map_layer
+}  // namespace costmap_2d
 
 #endif  // DISTANCE_MAP_LAYER_H_

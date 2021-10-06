@@ -1,6 +1,6 @@
 <class_libraries>
   <library path="lib/libdistance_map_layer">
-    <class type="distance_map_layer::DistanceMapLayer" base_class_type="costmap_2d::Layer">
+    <class type="costmap_2d::DistanceMapLayer" base_class_type="costmap_2d::Layer">
       <description>Euclidean distance map based on OpenCV distance transform function.</description>
     </class>
   </library>

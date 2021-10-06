@@ -2,9 +2,11 @@
 #include <chrono>
 #include "distance_map_layer/distance_map_layer.h"
 
-PLUGINLIB_EXPORT_CLASS(distance_map_layer::DistanceMapLayer, costmap_2d::Layer)
+PLUGINLIB_EXPORT_CLASS(costmap_2d::DistanceMapLayer, costmap_2d::Layer)
 
-namespace distance_map_layer
+using costmap_2d::LETHAL_OBSTACLE;
+
+namespace costmap_2d
 {
 DistanceMapLayer::DistanceMapLayer() : distmap_(NULL), binary_map_(NULL), last_size_x_(0), last_size_y_(0)
 {
@@ -75,7 +77,7 @@ void DistanceMapLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i
 
   for (int i = 0; i < size_x * size_y; i++)
   {
-    if (charmap[i] == costmap_2d::LETHAL_OBSTACLE)
+    if (charmap[i] == LETHAL_OBSTACLE)
       binary_map_[i] = 1;
     else
       binary_map_[i] = 0;
@@ -123,4 +125,4 @@ void DistanceMapLayer::computeCostmap()
   ROS_DEBUG("Runtime = %f ms.", timediff.count() * 1e3);
 }
 
-}  // namespace distance_map_layer
+}  // namespace costmap_2d
