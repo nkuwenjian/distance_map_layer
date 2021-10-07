@@ -10,6 +10,7 @@ namespace costmap_2d
 {
 DistanceMapLayer::DistanceMapLayer() : distmap_(NULL), binary_map_(NULL), last_size_x_(0), last_size_y_(0)
 {
+  mutex_ = new boost::mutex();
 }
 
 DistanceMapLayer::~DistanceMapLayer()
@@ -18,12 +19,18 @@ DistanceMapLayer::~DistanceMapLayer()
     delete[] distmap_;
   if (binary_map_)
     delete[] binary_map_;
+  if (mutex_)
+    delete mutex_;
 }
 
-const double* DistanceMapLayer::getDistanceMap()
+const double* DistanceMapLayer::getDistmap() const
 {
-  boost::mutex::scoped_lock lock(mutex_);
   return distmap_;
+}
+
+boost::mutex* DistanceMapLayer::getMutex()
+{
+  return mutex_;
 }
 
 void DistanceMapLayer::onInitialize()
@@ -55,6 +62,8 @@ void DistanceMapLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i
 {
   if (!enabled_)
     return;
+
+  boost::unique_lock<boost::mutex> lock(*mutex_);
 
   int size_x = master_grid.getSizeInCellsX();
   int size_y = master_grid.getSizeInCellsY();
@@ -88,8 +97,6 @@ void DistanceMapLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i
 
 void DistanceMapLayer::computeCostmap()
 {
-  boost::mutex::scoped_lock lock(mutex_);
-
   const auto start_t = std::chrono::system_clock::now();
   cv::Mat gridMapImage(last_size_y_, last_size_x_, CV_8UC1);
 

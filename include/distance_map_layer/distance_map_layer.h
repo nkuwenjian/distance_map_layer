@@ -23,7 +23,8 @@ public:
                             double* max_x, double* max_y);
   virtual void updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i, int max_j);
 
-  virtual const double* getDistanceMap();
+  const double* getDistmap() const;
+  boost::mutex* getMutex();
 
 private:
   void computeCostmap();
@@ -35,7 +36,7 @@ private:
   int last_size_x_;
   int last_size_y_;
   double resolution_;
-  boost::mutex mutex_;
+  boost::mutex* mutex_;
 };
 
 }  // namespace costmap_2d
