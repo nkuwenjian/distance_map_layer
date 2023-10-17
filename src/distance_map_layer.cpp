@@ -45,8 +45,6 @@ const std::vector<double>& DistanceMapLayer::getDistmap() const {
   return distmap_;
 }
 
-boost::mutex& DistanceMapLayer::getMutex() { return mutex_; }
-
 void DistanceMapLayer::onInitialize() {
   ros::NodeHandle nh("~/" + name_);
   current_ = true;
@@ -81,7 +79,7 @@ void DistanceMapLayer::updateCosts(costmap_2d::Costmap2D& master_grid,
     return;
   }
 
-  boost::unique_lock<boost::mutex> lock(mutex_);
+  std::lock_guard<std::mutex> lock(mutex_);
 
   unsigned int size_x = master_grid.getSizeInCellsX();
   unsigned int size_y = master_grid.getSizeInCellsY();

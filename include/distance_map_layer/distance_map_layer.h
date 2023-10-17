@@ -32,9 +32,9 @@
 #pragma once
 
 #include <memory>
+#include <mutex>  // NOLINT
 #include <vector>
 
-#include <boost/thread.hpp>
 #include <opencv2/opencv.hpp>
 
 #include "costmap_2d/GenericPluginConfig.h"
@@ -58,7 +58,7 @@ class DistanceMapLayer : public Layer {
                    int max_i, int max_j) override;
 
   const std::vector<double>& getDistmap() const;
-  boost::mutex& getMutex();
+  std::mutex& getMutex() { return mutex_; }
 
  private:
   void computeCostmap();
@@ -72,7 +72,7 @@ class DistanceMapLayer : public Layer {
   unsigned int last_size_x_ = 0;
   unsigned int last_size_y_ = 0;
   double resolution_;
-  boost::mutex mutex_;
+  std::mutex mutex_;
 };
 
 }  // namespace costmap_2d
