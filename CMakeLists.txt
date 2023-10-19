@@ -16,6 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
 )
 
+# Glog
+find_package(glog REQUIRED)
+
 # OpenCV
 find_package(OpenCV REQUIRED)
 if(OpenCV_FOUND)
@@ -36,4 +39,4 @@ include_directories(
 )
 
 add_library(distance_map_layer src/distance_map_layer.cpp)
-target_link_libraries(distance_map_layer ${catkin_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(distance_map_layer ${catkin_LIBRARIES} ${OpenCV_LIBS} glog::glog)

@@ -45,6 +45,7 @@
 #include "ros/ros.h"
 
 namespace costmap_2d {
+
 class DistanceMapLayer : public Layer {
  public:
   DistanceMapLayer() = default;
@@ -57,21 +58,25 @@ class DistanceMapLayer : public Layer {
   void updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int min_j,
                    int max_i, int max_j) override;
 
-  const std::vector<double>& getDistmap() const;
-  std::mutex& getMutex() { return mutex_; }
+  const std::vector<double>& euclidean_distance_map() const {
+    return euclidean_distance_map_;
+  }
+  std::mutex& mutex() { return mutex_; }
 
  private:
-  void computeCostmap();
-  void reconfigureCB(const costmap_2d::GenericPluginConfig& config,
+  void ComputeDistanceMap(size_t size_x, size_t size_y, double resolution);
+  void ReconfigureCB(const costmap_2d::GenericPluginConfig& config,
                      uint32_t level);
+  void ReallocateMemory(size_t size_x, size_t size_y);
+  bool UpdateBinaryMap(const costmap_2d::Costmap2D& master_grid, size_t size_x,
+                       size_t size_y);
   std::unique_ptr<dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>>
       dsrv_ = nullptr;
 
-  std::vector<double> distmap_;
-  std::vector<unsigned char> binary_map_;
-  unsigned int last_size_x_ = 0;
-  unsigned int last_size_y_ = 0;
-  double resolution_;
+  std::vector<double> euclidean_distance_map_;
+  std::vector<uint8_t> binary_map_;
+  size_t last_size_x_ = 0U;
+  size_t last_size_y_ = 0U;
   std::mutex mutex_;
 };
 
