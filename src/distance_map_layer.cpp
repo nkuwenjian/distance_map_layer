@@ -70,8 +70,8 @@ void DistanceMapLayer::updateCosts(costmap_2d::Costmap2D& master_grid,
 
   std::lock_guard<std::mutex> lock(mutex_);
 
-  size_t size_x = master_grid.getSizeInCellsX();
-  size_t size_y = master_grid.getSizeInCellsY();
+  unsigned int size_x = master_grid.getSizeInCellsX();
+  unsigned int size_y = master_grid.getSizeInCellsY();
   double resolution = master_grid.getResolution();
   VLOG(4) << std::fixed << "size_x: " << size_x << ", size_y: " << size_y
           << ", resolution: " << resolution;
@@ -86,7 +86,8 @@ void DistanceMapLayer::updateCosts(costmap_2d::Costmap2D& master_grid,
   ComputeDistanceMap(size_x, size_y, resolution);
 }
 
-void DistanceMapLayer::ReallocateMemory(size_t size_x, size_t size_y) {
+void DistanceMapLayer::ReallocateMemory(unsigned int size_x,
+                                        unsigned int size_y) {
   if (last_size_x_ == size_x && last_size_y_ == size_y) {
     return;
   }
@@ -100,14 +101,15 @@ void DistanceMapLayer::ReallocateMemory(size_t size_x, size_t size_y) {
 }
 
 bool DistanceMapLayer::UpdateBinaryMap(const costmap_2d::Costmap2D& master_grid,
-                                       size_t size_x, size_t size_y) {
+                                       unsigned int size_x,
+                                       unsigned int size_y) {
   const uint8_t* char_map = master_grid.getCharMap();
   if (char_map == nullptr) {
     LOG(ERROR) << "char_map == nullptr";
     return false;
   }
 
-  for (size_t i = 0U; i < size_x * size_y; ++i) {
+  for (unsigned int i = 0U; i < size_x * size_y; ++i) {
     if (char_map[i] == LETHAL_OBSTACLE) {
       binary_map_[i] = 1U;
     } else {
@@ -117,13 +119,14 @@ bool DistanceMapLayer::UpdateBinaryMap(const costmap_2d::Costmap2D& master_grid,
   return true;
 }
 
-void DistanceMapLayer::ComputeDistanceMap(size_t size_x, size_t size_y,
+void DistanceMapLayer::ComputeDistanceMap(unsigned int size_x,
+                                          unsigned int size_y,
                                           double resolution) {
   const auto start_timestamp = std::chrono::system_clock::now();
   cv::Mat grid_map_image(size_y, size_x, CV_8UC1);
 
   uchar* uchar_ptr = grid_map_image.ptr<uchar>(0);
-  for (size_t i = 0U; i < size_x * size_y; ++i) {
+  for (unsigned int i = 0U; i < size_x * size_y; ++i) {
     if (binary_map_[i] == 1U) {
       uchar_ptr[i] = 0U;
     } else {
@@ -137,7 +140,7 @@ void DistanceMapLayer::ComputeDistanceMap(size_t size_x, size_t size_y,
                         cv::DIST_MASK_PRECISE);
 
   float* float_ptr = distance_field_image.ptr<float>(0);
-  for (size_t i = 0U; i < size_x * size_y; ++i) {
+  for (unsigned int i = 0U; i < size_x * size_y; ++i) {
     euclidean_distance_map_[i] = static_cast<double>(float_ptr[i]) * resolution;
   }
 

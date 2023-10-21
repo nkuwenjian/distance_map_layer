@@ -64,19 +64,20 @@ class DistanceMapLayer : public Layer {
   std::mutex& mutex() { return mutex_; }
 
  private:
-  void ComputeDistanceMap(size_t size_x, size_t size_y, double resolution);
+  void ComputeDistanceMap(unsigned int size_x, unsigned int size_y,
+                          double resolution);
   void ReconfigureCB(const costmap_2d::GenericPluginConfig& config,
                      uint32_t level);
-  void ReallocateMemory(size_t size_x, size_t size_y);
-  bool UpdateBinaryMap(const costmap_2d::Costmap2D& master_grid, size_t size_x,
-                       size_t size_y);
+  void ReallocateMemory(unsigned int size_x, unsigned int size_y);
+  bool UpdateBinaryMap(const costmap_2d::Costmap2D& master_grid,
+                       unsigned int size_x, unsigned int size_y);
   std::unique_ptr<dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>>
       dsrv_ = nullptr;
 
   std::vector<double> euclidean_distance_map_;
   std::vector<uint8_t> binary_map_;
-  size_t last_size_x_ = 0U;
-  size_t last_size_y_ = 0U;
+  unsigned int last_size_x_ = 0U;
+  unsigned int last_size_y_ = 0U;
   std::mutex mutex_;
 };
 
