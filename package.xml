@@ -50,11 +50,11 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>costmap_2d</build_depend>
-  <build_depend>roscpp</build_depend>
+  <build_depend>pluginlib</build_depend>
   <build_export_depend>costmap_2d</build_export_depend>
-  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>pluginlib</build_export_depend>
   <exec_depend>costmap_2d</exec_depend>
-  <exec_depend>roscpp</exec_depend>
+  <exec_depend>pluginlib</exec_depend>
 
   <export>
     <costmap_2d plugin="${prefix}/costmap_plugins.xml" />

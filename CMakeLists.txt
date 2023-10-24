@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 
 # set(CMAKE_CXX_CLANG_TIDY
 #   clang-tidy;
-#   -header-filter=${PROJECT_SOURCE_DIR}/include/distance_map_layer;
+#   -header-filter=${PROJECT_SOURCE_DIR}/distance_map_layer;
 #   -warnings-as-errors=*;
 # )
 
@@ -18,7 +18,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   costmap_2d
-  roscpp
+  pluginlib
 )
 
 # Glog
@@ -31,17 +31,16 @@ if(OpenCV_FOUND)
 endif()
 
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS ${PROJECT_SOURCE_DIR}
   LIBRARIES distance_map_layer
-  CATKIN_DEPENDS costmap_2d roscpp
-#  DEPENDS system_lib
+  CATKIN_DEPENDS costmap_2d pluginlib
 )
 
 include_directories(
-  include
+  ${PROJECT_SOURCE_DIR}
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
 
-add_library(distance_map_layer src/distance_map_layer.cpp)
+add_library(distance_map_layer distance_map_layer/distance_map_layer.cc)
 target_link_libraries(distance_map_layer ${catkin_LIBRARIES} ${OpenCV_LIBS} glog::glog)
