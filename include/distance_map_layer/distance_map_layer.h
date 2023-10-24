@@ -41,7 +41,6 @@
 #include "costmap_2d/cost_values.h"
 #include "costmap_2d/layer.h"
 #include "costmap_2d/layered_costmap.h"
-#include "dynamic_reconfigure/server.h"
 #include "ros/ros.h"
 
 namespace costmap_2d {
@@ -49,7 +48,7 @@ namespace costmap_2d {
 class DistanceMapLayer : public Layer {
  public:
   DistanceMapLayer() = default;
-  virtual ~DistanceMapLayer() = default;
+  ~DistanceMapLayer() override = default;
 
   void onInitialize() override;
   void updateBounds(double robot_x, double robot_y, double robot_yaw,
@@ -66,13 +65,9 @@ class DistanceMapLayer : public Layer {
  private:
   void ComputeDistanceMap(unsigned int size_x, unsigned int size_y,
                           double resolution);
-  void ReconfigureCB(const costmap_2d::GenericPluginConfig& config,
-                     uint32_t level);
   void ReallocateMemory(unsigned int size_x, unsigned int size_y);
   bool UpdateBinaryMap(const costmap_2d::Costmap2D& master_grid,
                        unsigned int size_x, unsigned int size_y);
-  std::unique_ptr<dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>>
-      dsrv_ = nullptr;
 
   std::vector<double> euclidean_distance_map_;
   std::vector<uint8_t> binary_map_;

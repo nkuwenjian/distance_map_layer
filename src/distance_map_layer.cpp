@@ -43,17 +43,6 @@ namespace costmap_2d {
 void DistanceMapLayer::onInitialize() {
   ros::NodeHandle nh("~/" + name_);
   current_ = true;
-
-  dsrv_ = std::make_unique<
-      dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>>(nh);
-  dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>::CallbackType
-      cb = boost::bind(&DistanceMapLayer::ReconfigureCB, this, _1, _2);
-  dsrv_->setCallback(cb);
-}
-
-void DistanceMapLayer::ReconfigureCB(
-    const costmap_2d::GenericPluginConfig& config, uint32_t level) {
-  enabled_ = config.enabled;
 }
 
 void DistanceMapLayer::updateBounds(double robot_x, double robot_y,
@@ -123,9 +112,10 @@ void DistanceMapLayer::ComputeDistanceMap(unsigned int size_x,
                                           unsigned int size_y,
                                           double resolution) {
   const auto start_timestamp = std::chrono::system_clock::now();
-  cv::Mat grid_map_image(size_y, size_x, CV_8UC1);
+  cv::Mat grid_map_image(static_cast<int>(size_y), static_cast<int>(size_x),
+                         CV_8UC1);
 
-  uchar* uchar_ptr = grid_map_image.ptr<uchar>(0);
+  auto* uchar_ptr = grid_map_image.ptr<uchar>(0);
   for (unsigned int i = 0U; i < size_x * size_y; ++i) {
     if (binary_map_[i] == 1U) {
       uchar_ptr[i] = 0U;
@@ -139,7 +129,7 @@ void DistanceMapLayer::ComputeDistanceMap(unsigned int size_x,
   cv::distanceTransform(grid_map_image, distance_field_image, cv::DIST_L2,
                         cv::DIST_MASK_PRECISE);
 
-  float* float_ptr = distance_field_image.ptr<float>(0);
+  auto* float_ptr = distance_field_image.ptr<float>(0);
   for (unsigned int i = 0U; i < size_x * size_y; ++i) {
     euclidean_distance_map_[i] = static_cast<double>(float_ptr[i]) * resolution;
   }
