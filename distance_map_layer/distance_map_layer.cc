@@ -43,6 +43,17 @@ namespace costmap_2d {
 void DistanceMapLayer::onInitialize() {
   ros::NodeHandle nh("~/" + name_);
   current_ = true;
+
+  dsrv_ = std::make_unique<
+      dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>>(nh);
+  dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>::CallbackType
+      cb = [this](auto&& PH1, auto&& PH2) { ReconfigureCB(PH1, PH2); };
+  dsrv_->setCallback(cb);
+}
+
+void DistanceMapLayer::ReconfigureCB(
+    const costmap_2d::GenericPluginConfig& config, uint32_t level) {
+  enabled_ = config.enabled;
 }
 
 void DistanceMapLayer::updateBounds(double robot_x, double robot_y,
